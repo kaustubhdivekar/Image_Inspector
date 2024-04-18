@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, render_template
 from dotenv import load_dotenv
 from PIL import Image
 import os
+import requests
 import google.generativeai as genai
 import io
 
@@ -25,12 +26,23 @@ def index():
 @app.route('/process_image', methods=['POST'])
 def process_image():
     input_prompt = request.form.get('input_prompt')
-    uploaded_file = request.files['image']
-    if uploaded_file:
+    image_url = request.form.get('image_url')
+    uploaded_file = request.files.get('image')
+
+    if image_url:
+        response = requests.get(image_url)
+        if response.status_code == 200:
+            image = Image.open(io.BytesIO(response.content))
+            response = get_gemini_response(input_prompt, image)
+            return jsonify(response=response)
+        else:
+            return jsonify(response="Could not retrieve image from the URL.")
+    elif uploaded_file:
         image = Image.open(io.BytesIO(uploaded_file.read()))
         response = get_gemini_response(input_prompt, image)
         return jsonify(response=response)
-    return jsonify(response="No image uploaded.")
+    else:
+        return jsonify(response="No image uploaded.")
 
 if __name__ == '__main__':
     load_dotenv()

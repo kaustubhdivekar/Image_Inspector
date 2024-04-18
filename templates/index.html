@@ -55,10 +55,27 @@
             text-align: center;
         }
     </style>
+</head>
+<body>
+    <h1>Image Inspector</h1>
+    <form onsubmit="handleSubmit(event)">
+        Input Prompt : <input type="text" name="input_prompt" placeholder="Input Prompt here "><br>
+        Image URL:<input type="text" name="image_url" placeholder="Paste image URL here" oninput="previewImageUrl()"><br>
+        Or upload an image:<input type="file" name="image" accept="image/png, image/jpeg, image/jpg" onchange="previewFile()"><br>
+        <img id="preview" src="" alt="Image preview..."><br>
+        <input type="submit" value="Inspect"><br>
+    </form>
+    <div id="response">
+        <!-- The response will be displayed here -->
+    </div>
     <script>
         function handleSubmit(event) {
             event.preventDefault();
             var formData = new FormData(event.target);
+            var image_url = document.querySelector('input[name="image_url"]').value;
+            if(image_url){
+                formData.append('image_url', image_url);
+            }
             fetch('/process_image', {
                 method: 'POST',
                 body: formData
@@ -84,18 +101,11 @@
                 preview.src = "";
             }
         }
+        function previewImageUrl() {
+            var preview = document.getElementById('preview');
+            var imageUrl = document.querySelector('input[name="image_url"]').value;
+            preview.src = imageUrl;
+        }
     </script>
-</head>
-<body>
-    <h1>Image Inspector</h1>
-    <form onsubmit="handleSubmit(event)">
-        Input Prompt : <input type="text" name="input_prompt" placeholder="Input Prompt here "><br>
-        <input type="file" name="image" accept="image/png, image/jpeg, image/jpg" onchange="previewFile()"><br>
-        <img id="preview" src="" alt="Image preview..."><br>
-        <input type="submit" value="Inspect"><br>
-    </form>
-    <div id="response">
-        <!-- The response will be displayed here -->
-    </div>
 </body>
 </html>
