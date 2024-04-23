@@ -10,21 +10,52 @@
             margin: 0;
             padding: 0;
             font-size: 32px;
+            display: flex;
+            flex-direction: column;            
         }
-        h1 {
+        header{
             text-align: center;
             margin-top: 24px;
         }
+        .main-content {
+            display: flex;
+            flex-grow: 1; /* Changed from flex: 1 for clarity */
+        }
+        .column {
+            flex: 1;
+            padding: 10px;
+            box-sizing: border-box; /* Includes padding in the width calculation */
+        }
+        .left-column {
+            display: flex;
+            flex-direction: column;
+        }
+        .image-upload{
+            flex: 1; /* Adjusted for clarity */
+        }
+        .image-preview {
+            flex: 3; /* Takes up 3/4th of the left column */
+            text-align: center; /* Centers the image preview */
+        }
+        .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+        .response-display {
+            flex: 3; /* Takes up 3/4th of the right column */
+        }
+        .input-prompt {
+            flex: 1;
+        }
         form {
-            max-width: 800px;
-            margin: 0 auto;
+            width: 100%;
             padding: 20px;
             background-color: #ffffff;
             border-radius: 5px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         input[type="text"], input[type="file"] {
-            width: 100%;
+            width: calc(100% - 20px); /* Adjusts width to account for padding*/
             padding: 10px;
             margin-bottom: 10px;
             border: 1px solid #ccc;
@@ -32,7 +63,7 @@
             font-size: 24px;
         }
         input[type="submit"] {
-            width: 100%;
+            width: calc(100% - 20px); /* Adjusts width to account for padding */
             padding: 10px;
             background-color: #007bff;
             color: #ffffff;
@@ -45,29 +76,45 @@
             background-color: #0056b3;
         }
         #preview {
-            max-width: 800px;
+            max-width: 90%;
             margin: 20px auto;
             border: 1px solid #ccc;
             padding: 10px;
         }
         #response {
-            margin-top: 20px;
+            margin: 20px 30px 20px 20px;
             text-align: center;
         }
     </style>
 </head>
 <body>
-    <h1>Image Inspector</h1>
+    <header><h1>Image Inspector</h1></header>
     <form onsubmit="handleSubmit(event)">
-        Input Prompt : <input type="text" name="input_prompt" placeholder="Input Prompt here "><br>
-        Image URL:<input type="text" name="image_url" placeholder="Paste image URL here" oninput="previewImageUrl()"><br>
-        Or upload an image:<input type="file" name="image" accept="image/png, image/jpeg, image/jpg" onchange="previewFile()"><br>
-        <img id="preview" src="" alt="Image preview..."><br>
-        <input type="submit" value="Inspect"><br>
-    </form>
-    <div id="response">
-        <!-- The response will be displayed here -->
-    </div>
+        <div class = "main-content">
+            <div class="left-column column">
+                <div class="image-upload">
+                    <!-- Upload image or input URL with their input boxes -->
+                        Image URL:<input type="text" name="image_url" placeholder="Paste image URL here" oninput="previewImageUrl()"><br>
+                        Or upload an image:<input type="file" name="image" accept="image/png, image/jpeg, image/jpg" onchange="previewFile()"><br>
+                </div>
+                <div class="image-preview">
+                    <!-- Image preview -->
+                    <img id="preview" src="" alt="Image preview..."><br>
+                </div>
+            </div>
+            <div class="right-column column">
+                <div class="response-display">
+                    <!-- Response will be displayed here -->
+                    <div id="response"></div>
+                </div>
+                <div class="input-prompt">
+                    <!-- Input prompt with its input box -->
+                    Input Prompt : <input type="text" name="input_prompt" placeholder="Input Prompt here "><br>
+                    <input type="submit" value="Inspect"><br>
+                </div>
+            </div>
+        </div>
+    </form>        
     <script>
         function handleSubmit(event) {
             event.preventDefault();
